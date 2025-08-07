@@ -157,8 +157,12 @@ const projects = [
    - Output Directory: `build`
    - Install Command: `npm install`
 
-3. **Environment Variables** (if needed):
-   - `REACT_APP_BACKEND_URL`: Your backend URL
+3. **Environment Variables:**
+   - Go to Vercel Dashboard → Your Project → Settings → Environment Variables
+   - Add variable:
+     - Name: `VITE_BACKEND_URL`
+     - Value: `https://portfolio-site-dis6.onrender.com`
+   - Redeploy the project
 
 ### Backend (Render)
 
@@ -177,22 +181,34 @@ const projects = [
    - `NODE_ENV`: `production`
    - `FRONTEND_URL`: Your frontend URL
 
-5. **Update CORS Configuration:**
-   In `backend/server.js`, update the CORS origin to include your frontend URL:
+5. **CORS Configuration:**
+   The backend is already configured to allow requests from Vercel domains:
    ```javascript
    origin: process.env.NODE_ENV === 'production' 
-     ? ['https://your-frontend-domain.vercel.app']
+     ? ['https://portfolio-frontend.vercel.app', 'https://jadenbonnett.vercel.app', 'https://your-vercel-site.vercel.app']
      : 'http://localhost:3000'
    ```
+   Update the URLs to match your actual Vercel deployment URL.
 
-### Update Frontend Backend URL
+### Environment Variables Setup
 
-After deploying the backend, update the backend URL in `frontend/src/components/ContactForm.jsx`:
+The frontend uses environment variables for the backend URL:
 
+**Development:**
+- Create `frontend/.env` file with:
+  ```
+  VITE_BACKEND_URL=https://portfolio-site-dis6.onrender.com
+  ```
+
+**Production (Vercel):**
+- Add environment variable in Vercel dashboard:
+  - Name: `VITE_BACKEND_URL`
+  - Value: `https://portfolio-site-dis6.onrender.com`
+
+**Frontend Code:**
+The contact form automatically uses the environment variable:
 ```javascript
-const backendUrl = process.env.NODE_ENV === 'production' 
-  ? 'https://your-backend-url.onrender.com' 
-  : 'http://localhost:5000';
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
 ```
 
 ## 📧 Email Setup

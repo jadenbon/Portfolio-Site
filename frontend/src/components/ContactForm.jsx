@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import axios from 'axios';
 
 const ContactForm = () => {
   const [formData, setFormData] = useState({
@@ -47,24 +46,30 @@ const ContactForm = () => {
     setStatus({ type: '', message: '' });
 
     try {
-      // In development, use localhost. In production, use your deployed backend URL
-      const backendUrl = process.env.NODE_ENV === 'production' 
-        ? 'https://your-backend-url.onrender.com' 
-        : 'http://localhost:5000';
+      // Use environment variable for backend URL
+      const backendUrl = import.meta.env.VITE_BACKEND_URL;
       
-      const response = await axios.post(`${backendUrl}/api/contact`, formData);
+      const response = await fetch(`${backendUrl}/api/contact`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+      });
       
-      if (response.data.success) {
+      const data = await response.json();
+      
+      if (data.success) {
         setStatus({ type: 'success', message: 'Message sent successfully! I\'ll get back to you soon.' });
         setFormData({ name: '', email: '', message: '' });
       } else {
-        setStatus({ type: 'error', message: response.data.message || 'Something went wrong. Please try again.' });
+        setStatus({ type: 'error', message: data.message || 'Something went wrong. Please try again.' });
       }
     } catch (error) {
       console.error('Contact form error:', error);
       setStatus({ 
         type: 'error', 
-        message: error.response?.data?.message || 'Failed to send message. Please try again later.' 
+        message: 'Failed to send message. Please try again later.' 
       });
     } finally {
       setIsSubmitting(false);

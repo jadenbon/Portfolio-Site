@@ -9,8 +9,9 @@ const PORT = process.env.PORT || 5000;
 // Middleware
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
-    ? ['https://jadenbonnett.vercel.app', 'https://your-frontend-domain.vercel.app']
+    ? ['https://portfolio-frontend.vercel.app', 'https://jadenbonnett.vercel.app', 'https://your-vercel-site.vercel.app']
     : 'http://localhost:3000',
+  methods: ['GET', 'POST'],
   credentials: true
 }));
 app.use(express.json());
