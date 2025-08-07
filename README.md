@@ -160,7 +160,7 @@ const projects = [
 3. **Environment Variables:**
    - Go to Vercel Dashboard → Your Project → Settings → Environment Variables
    - Add variable:
-     - Name: `VITE_BACKEND_URL`
+     - Name: `REACT_APP_BACKEND_URL`
      - Value: `https://portfolio-site-dis6.onrender.com`
    - Redeploy the project
 
@@ -197,18 +197,18 @@ The frontend uses environment variables for the backend URL:
 **Development:**
 - Create `frontend/.env` file with:
   ```
-  VITE_BACKEND_URL=https://portfolio-site-dis6.onrender.com
+  REACT_APP_BACKEND_URL=https://portfolio-site-dis6.onrender.com
   ```
 
 **Production (Vercel):**
 - Add environment variable in Vercel dashboard:
-  - Name: `VITE_BACKEND_URL`
+  - Name: `REACT_APP_BACKEND_URL`
   - Value: `https://portfolio-site-dis6.onrender.com`
 
 **Frontend Code:**
 The contact form automatically uses the environment variable:
 ```javascript
-const backendUrl = import.meta.env.VITE_BACKEND_URL;
+const backendUrl = process.env.REACT_APP_BACKEND_URL;
 ```
 
 ## 📧 Email Setup

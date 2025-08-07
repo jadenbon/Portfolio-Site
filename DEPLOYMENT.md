@@ -36,7 +36,7 @@ Make sure your code is pushed to GitHub with the following structure:
 
 1. **Go to Project Settings → Environment Variables**
 2. **Add the following variable:**
-   - **Name**: `VITE_BACKEND_URL`
+   - **Name**: `REACT_APP_BACKEND_URL`
    - **Value**: `https://portfolio-site-dis6.onrender.com`
    - **Environment**: Production, Preview, Development
 
@@ -123,7 +123,7 @@ curl -X POST https://portfolio-site-dis6.onrender.com/api/contact \
 
 ### Frontend (Vercel)
 ```
-VITE_BACKEND_URL=https://portfolio-site-dis6.onrender.com
+REACT_APP_BACKEND_URL=https://portfolio-site-dis6.onrender.com
 ```
 
 ### Backend (Render)

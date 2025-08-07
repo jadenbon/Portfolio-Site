@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 
+
 const ContactForm = () => {
   const [formData, setFormData] = useState({
     name: '',
@@ -47,7 +48,7 @@ const ContactForm = () => {
 
     try {
       // Use environment variable for backend URL
-      const backendUrl = import.meta.env.VITE_BACKEND_URL;
+      const backendUrl = process.env.REACT_APP_BACKEND_URL;
       
       const response = await fetch(`${backendUrl}/api/contact`, {
         method: 'POST',

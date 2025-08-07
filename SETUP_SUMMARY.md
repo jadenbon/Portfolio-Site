@@ -7,8 +7,8 @@ Your full-stack portfolio website is now properly configured for deployment with
 ## 🔧 What's Been Configured
 
 ### ✅ Frontend (React)
-- **Environment Variable**: `VITE_BACKEND_URL=https://portfolio-site-dis6.onrender.com`
-- **Contact Form**: Updated to use `import.meta.env.VITE_BACKEND_URL`
+- **Environment Variable**: `REACT_APP_BACKEND_URL=https://portfolio-site-dis6.onrender.com`
+- **Contact Form**: Updated to use `process.env.REACT_APP_BACKEND_URL`
 - **Removed axios dependency**: Now using native `fetch` API
 - **File**: `frontend/.env` created with backend URL
 
@@ -30,7 +30,7 @@ Your full-stack portfolio website is now properly configured for deployment with
 1. Push code to GitHub
 2. Connect to Vercel
 3. Set root directory to `frontend`
-4. Add environment variable: `VITE_BACKEND_URL=https://portfolio-site-dis6.onrender.com`
+4. Add environment variable: `REACT_APP_BACKEND_URL=https://portfolio-site-dis6.onrender.com`
 5. Deploy
 
 ### Backend (Render)
