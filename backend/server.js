@@ -7,14 +7,24 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
-app.use(cors({
+console.log('Setting up CORS middleware...');
+const corsOptions = {
   origin: process.env.NODE_ENV === 'production' 
     ? ['https://portfolio-site-zeta-one-30.vercel.app', 'https://portfolio-frontend.vercel.app', 'https://jadenbonnett.vercel.app']
     : 'http://localhost:3000',
   methods: ['GET', 'POST'],
   credentials: true
-}));
+};
+console.log('CORS options:', corsOptions);
+
+app.use(cors(corsOptions));
 app.use(express.json());
+
+// Add request logging middleware
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url} - Origin: ${req.headers.origin}`);
+  next();
+});
 
 // Email transporter configuration
 const createTransporter = () => {
@@ -48,12 +58,23 @@ const validateContactData = (data) => {
 
 // Contact form endpoint
 app.post('/api/contact', async (req, res) => {
+  console.log('=== CONTACT FORM REQUEST RECEIVED ===');
+  console.log('Request headers:', req.headers);
+  console.log('Request body:', req.body);
+  console.log('Request method:', req.method);
+  console.log('Request URL:', req.url);
+  console.log('Origin:', req.headers.origin);
+  
   try {
     const { name, email, message } = req.body;
+    console.log('Extracted form data:', { name, email, message });
     
     // Validate input
     const validationErrors = validateContactData({ name, email, message });
+    console.log('Validation errors:', validationErrors);
+    
     if (validationErrors.length > 0) {
+      console.log('Validation failed, returning error');
       return res.status(400).json({
         success: false,
         message: validationErrors.join(', ')
@@ -61,6 +82,10 @@ app.post('/api/contact', async (req, res) => {
     }
     
     // Check if email credentials are configured
+    console.log('Checking email credentials...');
+    console.log('EMAIL_USER exists:', !!process.env.EMAIL_USER);
+    console.log('EMAIL_PASS exists:', !!process.env.EMAIL_PASS);
+    
     if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
       console.error('Email credentials not configured');
       return res.status(500).json({
@@ -70,9 +95,12 @@ app.post('/api/contact', async (req, res) => {
     }
     
     // Create email transporter
+    console.log('Creating email transporter...');
     const transporter = createTransporter();
+    console.log('Email transporter created successfully');
     
     // Email content
+    console.log('Preparing email content...');
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to: process.env.EMAIL_USER, // Send to yourself
@@ -95,11 +123,15 @@ app.post('/api/contact', async (req, res) => {
         </div>
       `
     };
+    console.log('Email content prepared:', mailOptions);
     
     // Send email
+    console.log('Attempting to send email...');
     await transporter.sendMail(mailOptions);
+    console.log('Email sent successfully to admin');
     
     // Send auto-reply to the person who contacted you
+    console.log('Preparing auto-reply email...');
     const autoReplyOptions = {
       from: process.env.EMAIL_USER,
       to: email,
@@ -118,28 +150,61 @@ app.post('/api/contact', async (req, res) => {
         </div>
       `
     };
+    console.log('Auto-reply email prepared:', autoReplyOptions);
     
+    console.log('Attempting to send auto-reply email...');
     await transporter.sendMail(autoReplyOptions);
+    console.log('Auto-reply email sent successfully');
     
+    console.log('=== CONTACT FORM SUCCESS ===');
     res.json({
       success: true,
       message: 'Message sent successfully!'
     });
     
   } catch (error) {
-    console.error('Contact form error:', error);
+    console.error('=== CONTACT FORM ERROR ===');
+    console.error('Error details:', error);
+    console.error('Error message:', error.message);
+    console.error('Error stack:', error.stack);
+    console.error('Error name:', error.name);
+    
+    // Check if it's a nodemailer error
+    if (error.code) {
+      console.error('Nodemailer error code:', error.code);
+    }
+    
     res.status(500).json({
       success: false,
-      message: 'Failed to send message. Please try again later.'
+      message: 'Failed to send message. Please try again later.',
+      debug: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
+  console.log('Health check request received');
   res.json({
     success: true,
     message: 'Server is running',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development',
+    emailConfigured: !!process.env.EMAIL_USER,
+    corsOrigins: corsOptions.origin
+  });
+});
+
+// Test contact endpoint (for debugging)
+app.post('/api/contact-test', (req, res) => {
+  console.log('=== CONTACT TEST ENDPOINT ===');
+  console.log('Request body:', req.body);
+  console.log('Request headers:', req.headers);
+  
+  res.json({
+    success: true,
+    message: 'Test endpoint working',
+    receivedData: req.body,
     timestamp: new Date().toISOString()
   });
 });
@@ -174,7 +239,13 @@ app.use('*', (req, res) => {
 });
 
 app.listen(PORT, () => {
+  console.log('=== SERVER STARTUP ===');
   console.log(`Server running on port ${PORT}`);
   console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
   console.log(`Email configured: ${process.env.EMAIL_USER ? 'Yes' : 'No'}`);
+  console.log(`CORS origins: ${JSON.stringify(corsOptions.origin)}`);
+  console.log('Available endpoints:');
+  console.log('  - GET  /api/health');
+  console.log('  - POST /api/contact');
+  console.log('=== SERVER READY ===');
 }); 
