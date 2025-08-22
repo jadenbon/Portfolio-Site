@@ -55,7 +55,7 @@ A modern, full-stack developer portfolio website built with React, Node.js, and 
 ### 1. Clone the Repository
 ```bash
 git clone <your-repo-url>
-cd portfolio-website
+cd Portfolio-Site
 ```
 
 ### 2. Install Dependencies
