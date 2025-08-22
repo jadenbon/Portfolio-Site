@@ -172,8 +172,12 @@ app.use('*', (req, res) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`Email configured: ${process.env.EMAIL_USER ? 'Yes' : 'No'}`);
-}); 
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+    console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`Email configured: ${process.env.EMAIL_USER ? 'Yes' : 'No'}`);
+  });
+}
+
+module.exports = { validateContactData };
