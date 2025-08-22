@@ -178,11 +178,12 @@ const projects = [
    - `FRONTEND_URL`: Your frontend URL
 
 5. **Update CORS Configuration:**
-   In `backend/server.js`, update the CORS origin to include your frontend URL:
+   In `backend/server.js`, configure CORS to use your `FRONTEND_URL` environment variable in production:
    ```javascript
-   origin: process.env.NODE_ENV === 'production' 
-     ? ['https://your-frontend-domain.vercel.app']
-     : 'http://localhost:3000'
+   origin:
+     process.env.NODE_ENV === 'production'
+       ? process.env.FRONTEND_URL
+       : 'http://localhost:3000'
    ```
 
 ### Update Frontend Backend URL
